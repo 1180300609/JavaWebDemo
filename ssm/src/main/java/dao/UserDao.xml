@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.UserDao">
+    <resultMap id="readMap" type="po.UserRead">
+        <id property="username" column="username"/>
+        <result property="rid" column="rid"/>
+        <result property="active" column="active"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+    </resultMap>
+    <select id="getUserByUsername" resultType="po.User" parameterType="String">
+        select *
+        from user
+        where username = #{username};
+    </select>
+    <select id="getCookList" resultType="po.User">
+        select *
+        from user
+        where rid = 2;
+    </select>
+    <insert id="addUser" parameterType="po.User">
+        insert into user(username, password, rid, phone, email)
+            value (#{username},#{password},#{rid},#{phone},#{email});
+    </insert>
+    <delete id="deleteUser" parameterType="String">
+        delete
+        from user
+        where username = #{username};
+    </delete>
+    <select id="getUserReadList" resultType="po.UserRead">
+        select *
+        from user;
+    </select>
+    <update id="updateUser" parameterType="po.User">
+        update user
+        <set>
+            <if test="password!=null and password!=''">
+                password=#{password}
+            </if>
+            <if test="rid!=0">
+                rid=#{rid},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone=#{phone},
+            </if>
+            <if test="email!=null and email!=''">
+                email=#{email},
+            </if>
+        </set>
+        where username = #{username}
+    </update>
+    <update id="freezeUser" parameterType="String">
+        update user
+        set active=0
+        where username = #{username};
+    </update>
+    <update id="releaseUser" parameterType="String">
+        update user
+        set active=1
+        where username = #{username};
+    </update>
+</mapper>

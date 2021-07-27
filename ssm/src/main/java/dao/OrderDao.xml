@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.OrderDao">
+    <resultMap id="map" type="po.Order">
+        <result property="id" column="id"/>
+        <result property="customer" column="customer"/>
+        <result property="cook" column="cook"/>
+        <result property="isdone" column="isdone"/>
+        <result property="total" column="total"/>
+        <collection property="items" javaType="List" ofType="po.Menu">
+            <result column="random"/>
+            <result property="menuid" column="menuid"/>
+            <result property="name" column="name"/>
+            <result property="details" column="details"/>
+            <result property="price" column="price"/>
+        </collection>
+    </resultMap>
+    <select id="getOrderList" resultMap="map" resultType="po.Order">
+        select *
+        from orders,
+             orderitem,
+             menu
+        where orders.id = orderitem.orderid
+          and menu.menuid = orderitem.menuid
+    </select>
+    <insert id="addOrderStepOne" parameterType="po.Order">
+        insert into orders(customer, cook, isdone, total)
+            value (#{customer},#{cook},${isdone},#{total});
+    </insert>
+    <insert id="addOrderStepTwo" parameterType="Integer">
+        insert into orderitem(orderid, menuid ,random) value (#{param1},#{param2},#{param3});
+    </insert>
+    <delete id="deleteOrder" parameterType="Integer">
+        delete
+        orders where id=
+        #{orderId};
+    </delete>
+    <update id="setOrderCook" parameterType="po.Order">
+        update orders
+        set cook = #{cook}
+        where id = #{id};
+    </update>
+    <update id="setOrderDone">
+        update orders
+        set isdone = 1
+        where id = #{orderId};
+    </update>
+    <select id="getOrderListByCustomer" parameterType="String"
+            resultType="po.Order" resultMap="map">
+        select *
+        from orders,
+             orderitem,
+             menu
+        where orders.id = orderitem.orderid
+          and menu.menuid = orderitem.menuid
+          and orders.customer = #{customer};
+    </select>
+    <select id="getLastID" resultType="Integer">
+        select max(id) from orders;
+    </select>
+</mapper>
