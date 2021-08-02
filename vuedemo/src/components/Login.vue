@@ -44,7 +44,16 @@ export default {
         window.sessionStorage.setItem("token",res.token)
         window.sessionStorage.setItem("username",res.username)
         window.sessionStorage.setItem("rid",res.rid)
-        this.$router.push('/home')
+        if (res.rid === 1) {
+          await this.$router.push('/home');
+        }else if (res.rid === 2) {
+          await this.$router.push('/homeCook');
+        }else if (res.rid === 3) {
+          await this.$router.push('/homeCustomer');
+        }else {
+          alert("rid错误,请联系管理员")
+          window.sessionStorage.clear()
+        }
       }
     }
   }

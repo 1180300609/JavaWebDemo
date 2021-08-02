@@ -10,6 +10,8 @@ public interface OrderService {
 
     List<Order> getOrderListByCustomer(String customer);
 
+    List<Order> getOrderListByCook(String cook);
+
     int addOrder(Order order, List<Integer> items);
 
     int deleteOrder(Integer orderId);
@@ -17,4 +19,6 @@ public interface OrderService {
     int setOrderCook(Order order);
 
     int setOrderDone(Integer orderId);
+
+    Order getOrderByID(Integer orderID);
 }

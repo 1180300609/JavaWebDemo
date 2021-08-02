@@ -41,4 +41,15 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+<!--    对所有的请求都转化为https-->
+    <security-constraint>
+        <!-- Authorization setting for SSL -->
+        <web-resource-collection >
+            <web-resource-name >SSL</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
 </web-app>

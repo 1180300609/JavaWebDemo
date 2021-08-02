@@ -32,8 +32,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> getOrderListByCook(String cook) {
+        if (cook == null || cook.equals("")) {
+            return null;
+        } else {
+            return orderDao.getOrderListByCook(cook);
+        }
+    }
+
+    @Override
     public int addOrder(Order order, List<Integer> items) {
-        double total=0;
+        double total = 0;
         for (int i : items) {
             Menu menu = menuDao.selectMenuByID(i);
             total += menu.getPrice();
@@ -42,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
         int res = orderDao.addOrderStepOne(order);
         int orderId = orderDao.getLastID();
         for (int i : items) {
-            int random =(int) (Math.random()*100000);
-            orderDao.addOrderStepTwo(orderId, i ,random);
+            int random = (int) (Math.random() * 100000);
+            orderDao.addOrderStepTwo(orderId, i, random);
         }
         return res;
     }
@@ -60,6 +69,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int setOrderDone(Integer orderId) {
+        Order order = orderDao.getOrderByID(orderId);
+        if (order.getCook() == null || order.getCook().equals("")) {
+            return 0;
+        }
         return orderDao.setOrderDone(orderId);
     }
+
+    @Override
+    public Order getOrderByID(Integer orderID) {
+        return orderDao.getOrderByID(orderID);
+    }
+
+
 }

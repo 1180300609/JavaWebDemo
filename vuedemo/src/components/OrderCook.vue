@@ -63,46 +63,15 @@
           width="180">
         <template slot-scope="scope">
           <el-button
-              @click="dialogVisible=true;orderID=scope.row.id"
-              type="text"
-              size="small">
-            厨师接单
-          </el-button>
-          <el-button
               @click="doneOrder(scope.row.id)"
+              :disabled="scope.row.isdone===1"
               type="text"
               size="small">
             完成订单
           </el-button>
-          <el-button
-              @click="deleteOrder(scope.row.id)"
-              type="text"
-              size="small">
-            删除
-          </el-button>
         </template>
       </el-table-column>
     </el-table>
-
-
-    <el-dialog
-        title="厨师接单"
-        :visible.sync="dialogVisible">
-      <p v-if="cookName!==''" class="mypclass">已选中:{{cookName}}</p>
-        <li v-for="item in cookList">
-          <ul @click="cookName=item">
-            {{ item }}
-          </ul>
-          <el-button @click="cookName=item" size="small" type="primary">选择</el-button>
-        </li>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false;submitCookName()" type="primary">确定</el-button>
-        </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false;cookName='';orderID=''" >取 消</el-button>
-        </span>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -120,31 +89,13 @@ export default {
   },
   created() {
     this.fetchData()
-    this.fetchCookList()
   },
   methods: {
     async fetchData() {
-      const {data: res} = await this.$http.get('order/list');
-      this.tableData = res
-    },
-    async fetchCookList() {
-      const {data: res} = await this.$http.get('cookList');
-      this.cookList = res
-      console.log(this.cookList)
-    },
-    async submitCookName() {
-      console.log(this.orderID)
-      console.log(this.cookName)
       let param = new URLSearchParams()
-      param.append("orderID", this.orderID)
-      param.append("cookName", this.cookName)
-      const {data: res} = await this.$http.post('order/setOrderCook',param);
-      if (res !== "success") {
-        alert("接单失败")
-      }else {
-        alert("接单成功")
-        await this.fetchData()
-      }
+      param.append("cook", window.sessionStorage.getItem("username"))
+      const {data: res} = await this.$http.post('order/cookOrderList',param);
+      this.tableData = res
     },
     async doneOrder(orderid) {
       let param = new URLSearchParams()
@@ -154,20 +105,9 @@ export default {
         alert("完成订单失败")
       }else {
         alert("完成订单成功")
-        await this.fetchData()
+        this.fetchData()
       }
     },
-    async deleteOrder(orderID) {
-      let param = new URLSearchParams()
-      param.append("orderID", orderID)
-      const {data: res} = await this.$http.post('order/deleteOrder', param);
-      if (res !== "success") {
-        alert("删除订单失败")
-      } else {
-        alert("删除订单成功")
-        await this.fetchData()
-      }
-    }
   }
 }
 </script>

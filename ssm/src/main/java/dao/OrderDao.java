@@ -19,5 +19,9 @@ public interface OrderDao {
 
     List<Order> getOrderListByCustomer(String customer);
 
+    List<Order> getOrderListByCook(String cook);
+
     int getLastID();
+
+    Order getOrderByID(Integer orderID);
 }

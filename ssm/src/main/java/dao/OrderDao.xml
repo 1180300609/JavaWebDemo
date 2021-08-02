@@ -31,10 +31,10 @@
             value (#{customer},#{cook},${isdone},#{total});
     </insert>
     <insert id="addOrderStepTwo" parameterType="Integer">
-        insert into orderitem(orderid, menuid ,random) value (#{param1},#{param2},#{param3});
+        insert into orderitem(orderid, menuid, random) value (#{param1},#{param2},#{param3});
     </insert>
     <delete id="deleteOrder" parameterType="Integer">
-        delete
+        delete from
         orders where id=
         #{orderId};
     </delete>
@@ -58,7 +58,27 @@
           and menu.menuid = orderitem.menuid
           and orders.customer = #{customer};
     </select>
+    <select id="getOrderListByCook" parameterType="String"
+            resultType="po.Order" resultMap="map">
+        select *
+        from orders,
+             orderitem,
+             menu
+        where orders.id = orderitem.orderid
+          and menu.menuid = orderitem.menuid
+          and orders.cook = #{cook};
+    </select>
     <select id="getLastID" resultType="Integer">
-        select max(id) from orders;
+        select max(id)
+        from orders;
+    </select>
+    <select id="getOrderByID" parameterType="Integer" resultType="po.Order" resultMap="map">
+        select *
+        from orders,
+             orderitem,
+             menu
+        where orders.id = orderitem.orderid
+          and menu.menuid = orderitem.menuid
+          and orders.id = #{orderID}
     </select>
 </mapper>

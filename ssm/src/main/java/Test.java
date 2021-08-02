@@ -20,11 +20,8 @@ import java.util.List;
 public class Test {
     public static void main(String[] args) {
         ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("config/applicationContext.xml");
-        UserService dao = classPathXmlApplicationContext.getBean(UserService.class);
-        User user = new User();
-        user.setUsername("admin");
-        user.setPassword("123456");
-        int i = dao.addUser(user);
-        System.out.println("res::"+i);
+        OrderService dao = classPathXmlApplicationContext.getBean(OrderService.class);
+        Order orderByID = dao.getOrderByID(9);
+        System.out.println(orderByID);
     }
 }

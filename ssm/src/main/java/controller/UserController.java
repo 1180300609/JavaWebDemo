@@ -118,4 +118,18 @@ public class UserController {
             return "fail";
         }
     }
+
+    @PostMapping("/user/updatePasswd")
+    public String updatePasswd(@RequestParam("username") String username,
+                               @RequestParam("password") String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        int res = userService.updateUser(user);
+        if (res != 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
 }

@@ -25,6 +25,16 @@ public class OrderController {
         return orderService.getOrderList();
     }
 
+    @PostMapping("/customerOrderList")
+    public List<Order> getCustomerOrderList(@RequestParam("customer") String username) {
+        return orderService.getOrderListByCustomer(username);
+    }
+
+    @PostMapping("/cookOrderList")
+    public List<Order> getCookOrderList(@RequestParam("cook") String username) {
+        return orderService.getOrderListByCook(username);
+    }
+
     @PostMapping("/addOrder")
     public String addOrder(@RequestParam("customer") String customer, @RequestParam("menuList") ArrayList<Integer> menuList) {
         System.out.println("addOrder");
@@ -43,6 +53,16 @@ public class OrderController {
     @PostMapping("/doneOrder")
     public String doneOrder(@RequestParam("orderID") Integer orderID) {
         int res = orderService.setOrderDone(orderID);
+        if (res != 0) {
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    @PostMapping("/deleteOrder")
+    public String deleteOrder(@RequestParam("orderID") Integer orderID) {
+        int res = orderService.deleteOrder(orderID);
         if (res != 0) {
             return "success";
         } else {
