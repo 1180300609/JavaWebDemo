@@ -1,19 +1,27 @@
 package service.impl;
 
+import dao.SaltDao;
 import dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import po.Salt;
 import po.User;
 import po.UserRead;
 import service.UserService;
+import utils.EncryptedUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private SaltDao saltDao;
 
     @Override
     public User getUserByUsername(String username) {
@@ -33,12 +41,19 @@ public class UserServiceImpl implements UserService {
             return 0;
         }
         int res = 0;
-        try {
-            res = userDao.addUser(user);
-        } catch (Exception e) {
-            System.out.println("添加用户失败");
+        String password = user.getPassword();
+        String salt = EncryptedUtil.getSalt();
+        String pbkdf2 = EncryptedUtil.getPBKDF2(password, salt);
+        user.setPassword(pbkdf2);
+        res = userDao.addUser(user);
+        if (res != 0) {
+            Salt s = new Salt();
+            s.setSalt(salt);
+            s.setUsername(user.getUsername());
+            return saltDao.addSalt(s);
+        }else {
+            return res;
         }
-        return res;
     }
 
     @Override
@@ -51,7 +66,19 @@ public class UserServiceImpl implements UserService {
         if (user.getUsername() == null || user.getUsername().equals("")) {
             return 0;
         } else {
-            return userDao.updateUser(user);
+            if (user.getPassword().equals("")) {
+                return userDao.updateUser(user);
+            }else {
+                String password = user.getPassword();
+                String salt = EncryptedUtil.getSalt();
+                String pbkdf2 = EncryptedUtil.getPBKDF2(password, salt);
+                user.setPassword(pbkdf2);
+                userDao.updateUser(user);
+                Salt s = new Salt();
+                s.setSalt(salt);
+                s.setUsername(user.getUsername());
+                return saltDao.updateSalt(s);
+            }
         }
     }
 

@@ -1,9 +1,11 @@
 package service;
 
+import org.springframework.transaction.annotation.Transactional;
 import po.Menu;
 
 import java.util.List;
 
+@Transactional
 public interface MenuService {
     List<Menu> getMenuList();
 

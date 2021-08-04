@@ -1,10 +1,12 @@
 package service;
 
 import com.sun.org.apache.xpath.internal.operations.Or;
+import org.springframework.transaction.annotation.Transactional;
 import po.Order;
 
 import java.util.List;
 
+@Transactional
 public interface OrderService {
     List<Order> getOrderList();
 

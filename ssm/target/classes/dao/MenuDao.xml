@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.MenuDao">
+    <select id="getMenuList" resultType="po.Menu">
+        select *
+        from menu;
+    </select>
+    <delete id="deleteMenuByID" parameterType="Integer">
+        delete
+        from menu
+        where menuid = #{id};
+    </delete>
+    <select id="selectMenuByID" parameterType="Integer" resultType="po.Menu">
+        select *
+        from menu
+        where menuid = #{id};
+    </select>
+    <select id="selectMenuByName" parameterType="String">
+        select *
+        from menu
+        where name = #{name};
+    </select>
+    <update id="updateMenu" parameterType="po.Menu">
+        update menu
+        <set>
+            <if test="name!=null and name !=''">
+                name =#{name},
+            </if>
+            <if test="details!=null and details !=''">
+                details =#{details},
+            </if>
+            <if test="price!=null and price !=''">
+                price =#{price},
+            </if>
+        </set>
+        where menuid = #{menuid}
+    </update>
+    <insert id="insertMenu" parameterType="po.Menu">
+        insert into menu(name,details, price)
+        values (#{name}, #{details}, #{price});
+    </insert>
+    <select id="searchMenu" parameterType="String" resultType="po.Menu">
+        select *
+        from menu
+        where name like concat('%',#{name},'%')
+           or details like concat('%',#{details},'%');
+    </select>
+</mapper>

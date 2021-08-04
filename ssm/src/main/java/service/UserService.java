@@ -1,10 +1,12 @@
 package service;
 
+import org.springframework.transaction.annotation.Transactional;
 import po.User;
 import po.UserRead;
 
 import java.util.List;
 
+@Transactional
 public interface UserService {
     User getUserByUsername(String username);
 
